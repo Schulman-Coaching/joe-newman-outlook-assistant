@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "joe-newman-outlook-assistant",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/taskpane.html",
+      "dest": "/taskpane.html"
+    },
+    {
+      "src": "/commands.html",
+      "dest": "/commands.html"
+    }
+  ]
+}
