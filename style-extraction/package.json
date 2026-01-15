@@ -1,0 +1,32 @@
+{
+  "name": "email-style-extractor",
+  "version": "1.0.0",
+  "description": "Extract writing style from Outlook sent emails using Microsoft Graph API",
+  "main": "extract-emails.js",
+  "scripts": {
+    "auth": "node auth.js",
+    "extract": "node extract-emails.js",
+    "process": "python3 process-emails.py",
+    "analyze": "python3 analyze-style.py",
+    "full-pipeline": "npm run extract && npm run process && npm run analyze"
+  },
+  "keywords": [
+    "microsoft-graph",
+    "outlook",
+    "email",
+    "style-analysis",
+    "ai-training"
+  ],
+  "author": "Joe Newman Building Supply",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/msal-node": "^2.6.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.1",
+    "yargs": "^17.7.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

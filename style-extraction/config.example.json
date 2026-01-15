@@ -1,0 +1,58 @@
+{
+  "extraction": {
+    "defaultMonthsBack": 6,
+    "maxEmailsPerRequest": 100,
+    "includeAttachments": false,
+    "skipEmptyBodies": true
+  },
+  "processing": {
+    "removeQuotedText": true,
+    "removeSignatures": false,
+    "anonymizeCustomers": true,
+    "removeSensitiveData": true,
+    "minEmailLength": 20
+  },
+  "anonymization": {
+    "patterns": {
+      "email": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",
+      "phone": "\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b",
+      "ssn": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "accountNumber": "\\b[Aa]ccount\\s*#?\\s*\\d{4,}\\b",
+      "currency": "\\$\\s*\\d+(?:,\\d{3})*(?:\\.\\d{2})?"
+    },
+    "replacements": {
+      "customerName": "[Customer]",
+      "email": "[email removed]",
+      "phone": "[phone removed]",
+      "account": "[account number removed]",
+      "amount": "$[amount]"
+    }
+  },
+  "analysis": {
+    "greetingPatterns": [
+      "Hi [Name],",
+      "Hello [Name],",
+      "Hey [Name],",
+      "Dear [Name],",
+      "[Name],"
+    ],
+    "signOffPatterns": [
+      "Thanks,",
+      "Best,",
+      "Best regards,",
+      "Regards,",
+      "Sincerely,"
+    ],
+    "toneIndicators": {
+      "formal": ["Dear", "Sincerely", "Regards", "Please find", "I am writing to"],
+      "friendly": ["Hey", "Thanks", "Great", "Love", "Awesome"],
+      "professional": ["Please", "Thank you", "Appreciate", "Kindly", "Per our discussion"]
+    }
+  },
+  "output": {
+    "formatRawEmails": true,
+    "includeMetadata": true,
+    "saveTrainingSamples": true,
+    "maxSamplesPerType": 10
+  }
+}

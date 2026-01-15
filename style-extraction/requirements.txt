@@ -1,0 +1,28 @@
+# Python dependencies for email processing and style analysis
+
+# Environment and configuration
+python-dotenv==1.0.0
+
+# Text processing
+regex==2023.12.25
+
+# Language detection
+langdetect==1.0.9
+
+# Natural language processing
+nltk==3.8.1
+
+# Data manipulation
+pandas==2.1.4
+
+# JSON handling (built-in, but listing for reference)
+# json (standard library)
+
+# Date/time handling (built-in)
+# datetime (standard library)
+
+# Email parsing
+email-validator==2.1.0
+
+# Text analysis
+textstat==0.7.3
