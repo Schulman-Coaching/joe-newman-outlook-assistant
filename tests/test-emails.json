@@ -1,0 +1,265 @@
+{
+  "test_emails": [
+    {
+      "id": "test-1.1",
+      "category": "response_generation",
+      "test_name": "Quick Reply to Simple Question",
+      "subject": "Question about lumber delivery",
+      "from": "contractor@example.com",
+      "sender": "Sarah Johnson",
+      "body": "Hi Joe,\n\nCan we reschedule our lumber delivery from next Tuesday to Thursday instead?\n\nThanks,\nSarah",
+      "expected_response_type": "quick",
+      "expected_keywords": ["reschedule", "Thursday", "delivery", "confirm"],
+      "expected_word_count": [40, 100]
+    },
+    {
+      "id": "test-1.2",
+      "category": "response_generation",
+      "test_name": "Detailed Response to Multi-Point Email",
+      "subject": "Quote Request - Commercial Project",
+      "from": "generalcontractor@company.com",
+      "sender": "Michael Chen",
+      "body": "Hi Joe,\n\nI'm working on a commercial renovation project and need quotes for the following:\n\n1. What's your current pricing on 2x4 studs (approximately 500 units needed)?\n2. Do you stock commercial-grade drywall and can you deliver to job sites?\n3. What are your bulk discount rates for orders over $10,000?\n4. Can you provide references from other commercial contractors you've worked with?\n\nProject starts in 3 weeks, so timing is important.\n\nBest regards,\nMichael Chen\nChen Construction LLC",
+      "expected_response_type": "detailed",
+      "expected_keywords": ["pricing", "delivery", "bulk discount", "references"],
+      "expected_word_count": [150, 300]
+    },
+    {
+      "id": "test-1.3",
+      "category": "response_generation",
+      "test_name": "Meeting Response Suggestion",
+      "subject": "Need to discuss Q1 inventory planning",
+      "from": "supplier@example.com",
+      "sender": "Alex Rodriguez",
+      "body": "Joe,\n\nWe need to align on inventory levels for Q1. There are some supply chain issues with our current approach that I'd like to discuss with you.\n\nCan we set up some time?\n\nBest,\nAlex",
+      "expected_response_type": "meeting",
+      "expected_keywords": ["meeting", "schedule", "time", "availability"],
+      "expected_word_count": [100, 250]
+    },
+    {
+      "id": "test-2.1",
+      "category": "task_extraction",
+      "test_name": "Single Task with Deadline",
+      "subject": "Purchase Order Approval Needed",
+      "from": "accounting@client.com",
+      "sender": "Jennifer Lee",
+      "body": "Joe,\n\nCould you please review the attached purchase order for the Henderson project and send me your approval by Friday, January 20th? They need to finalize their budget.\n\nThanks,\nJennifer",
+      "expected_tasks": [
+        {
+          "text_contains": "review",
+          "priority": "high",
+          "due_date": "January 20"
+        },
+        {
+          "text_contains": "approval",
+          "priority": "high",
+          "due_date": "January 20"
+        }
+      ],
+      "min_tasks": 1,
+      "max_tasks": 3
+    },
+    {
+      "id": "test-2.2",
+      "category": "task_extraction",
+      "test_name": "Multiple Tasks with Different Priorities",
+      "subject": "Action Items from Supplier Meeting",
+      "from": "admin@joenewman.com",
+      "sender": "Lisa Martinez",
+      "body": "Hi Joe,\n\nFollowing up on our supplier meeting, here are the action items:\n\n1. URGENT: Please sign the new vendor agreement by end of day - they need it for their records\n2. Can you review the Q1 pricing sheet when you get a chance?\n3. We need to schedule the warehouse inventory count for next month\n4. No rush, but could you update the supplier contact list on the shared drive?\n\nLet me know if you have questions.\n\nLisa",
+      "expected_tasks": [
+        {
+          "text_contains": "sign",
+          "priority": "high",
+          "due_date": "end of day"
+        },
+        {
+          "text_contains": "review",
+          "priority": "medium",
+          "due_date": null
+        },
+        {
+          "text_contains": "schedule",
+          "priority": "medium",
+          "due_date": "next month"
+        },
+        {
+          "text_contains": "update",
+          "priority": "low",
+          "due_date": null
+        }
+      ],
+      "min_tasks": 4,
+      "max_tasks": 5
+    },
+    {
+      "id": "test-2.3",
+      "category": "task_extraction",
+      "test_name": "Implicit Tasks",
+      "subject": "Customer Complaint - Damaged Shipment",
+      "from": "customer@example.com",
+      "sender": "David Kim",
+      "body": "Joe,\n\nOne of our crew members reported that the last drywall delivery had significant water damage. I think it would be helpful if you could address this with them directly and arrange a replacement shipment.\n\nThanks,\nDavid",
+      "expected_tasks": [
+        {
+          "text_contains": "address",
+          "priority": "high",
+          "due_date": null
+        },
+        {
+          "text_contains": "replacement",
+          "priority": "high",
+          "due_date": null
+        }
+      ],
+      "min_tasks": 1,
+      "max_tasks": 3
+    },
+    {
+      "id": "test-2.4",
+      "category": "task_extraction",
+      "test_name": "No Clear Tasks",
+      "subject": "Great Service Today",
+      "from": "contractor@example.com",
+      "sender": "Mark Thompson",
+      "body": "Joe,\n\nThanks for the quick turnaround on that lumber order today. Your team's efficiency and the quality of materials were exactly what we needed. We'll definitely be ordering from you again.\n\nAppreciate your service!\n\nMark",
+      "expected_tasks": [
+        {
+          "text_contains": "follow",
+          "priority": "medium",
+          "due_date": null
+        }
+      ],
+      "min_tasks": 0,
+      "max_tasks": 1
+    },
+    {
+      "id": "test-3.1",
+      "category": "summarization",
+      "test_name": "Short Informational Email",
+      "subject": "Delivery Confirmed for Henderson Project",
+      "from": "logistics@example.com",
+      "sender": "Amanda Wright",
+      "body": "Hi Joe,\n\nThanks for confirming the delivery for next Tuesday at 8 AM. I've updated the job schedule. Looking forward to receiving the materials - the framing crew is ready to start as soon as they arrive.\n\nSee you then,\nAmanda",
+      "expected_summary": {
+        "contains_subject": true,
+        "contains_sender": true,
+        "contains_word_count": true,
+        "key_points_count": [2, 4],
+        "key_topics": ["confirmed", "Tuesday", "8 AM", "framing"]
+      }
+    },
+    {
+      "id": "test-3.2",
+      "category": "summarization",
+      "test_name": "Long Complex Email",
+      "subject": "Q4 Supplier Partnership Proposal",
+      "from": "regional-manager@supplier.com",
+      "sender": "Rebecca Foster",
+      "body": "Dear Joe,\n\nI hope this email finds you well. I am writing to discuss the possibility of expanding our supplier partnership for Q4 2024 and beyond.\n\nYour building supply business has been experiencing consistent growth over the past 18 months, and we've noticed your increasing order volumes across multiple product categories. Our company has identified you as a strategic partner for our regional expansion.\n\nWe are looking to establish preferred vendor relationships with approximately 15-20 building supply companies across the tri-state area. The program would include priority access to inventory, preferential pricing, and dedicated account management.\n\nFrom a financial perspective, we're offering volume discounts of 15-20% on orders over $50,000, though specific terms are subject to contract negotiation. We would need to finalize agreements by the end of September to ensure Q4 pricing is locked in.\n\nSome specific benefits we can provide include:\n- Guaranteed inventory allocation during supply shortages\n- Extended payment terms (Net 60 instead of Net 30)\n- Free delivery on orders over $5,000\n- Priority customer service and technical support\n\nCould you provide feedback on this proposal and let me know if you'd be interested in moving forward? We would also appreciate references from other suppliers you work with to understand your current vendor relationships.\n\nOur timeline is somewhat tight - we'd like to have initial agreements in place by the end of this month so we can present the full partnership roster to our executive team in early September.\n\nPlease let me know if you need any additional information or would like to schedule a call to discuss this further.\n\nBest regards,\nRebecca Foster\nRegional Sales Manager\nNational Building Supplies Inc.",
+      "expected_summary": {
+        "contains_subject": true,
+        "contains_sender": true,
+        "contains_word_count": true,
+        "key_points_count": [3, 5],
+        "key_topics": ["Q4 partnership", "volume discounts", "preferred vendor", "deadline"]
+      }
+    },
+    {
+      "id": "test-4.1",
+      "category": "meeting_detection",
+      "test_name": "Explicit Meeting Request with Details",
+      "subject": "Let's Schedule a Site Visit",
+      "from": "contractor@example.com",
+      "sender": "Karen Davis",
+      "body": "Hi Joe,\n\nI'd like to schedule a 1-hour site visit to review the materials for our Q2 construction projects. I'm available:\n\n- Tuesday, January 24th at 10 AM\n- Wednesday, January 25th at 2 PM\n- Thursday, January 26th at 11 AM\n\nWe can meet at your warehouse or I can come to your office (whichever is more convenient).\n\nLet me know what works for you!\n\nKaren",
+      "expected_meeting": {
+        "is_meeting": true,
+        "title_contains": "site visit",
+        "has_date_time": true,
+        "has_duration": true,
+        "has_location": true,
+        "duration": "1 hour",
+        "location_options": ["warehouse", "office"]
+      }
+    },
+    {
+      "id": "test-4.2",
+      "category": "meeting_detection",
+      "test_name": "Implicit Meeting Suggestion",
+      "subject": "Catching Up on New Products",
+      "from": "supplier@example.com",
+      "sender": "Tom Wilson",
+      "body": "Joe,\n\nIt's been a while since we connected. Would love to grab coffee sometime next week and show you our new product line that just came in.\n\nWhat does your schedule look like?\n\nBest,\nTom",
+      "expected_meeting": {
+        "is_meeting": true,
+        "title_contains": ["catching", "products"],
+        "has_date_time": false,
+        "suggested_date": "next week",
+        "location_type": "coffee"
+      }
+    },
+    {
+      "id": "test-4.3",
+      "category": "meeting_detection",
+      "test_name": "Virtual Meeting with Platform Link",
+      "subject": "Quarterly Supplier Review - Tomorrow",
+      "from": "supplier@example.com",
+      "sender": "Rachel Green",
+      "body": "Hi Joe,\n\nThis is a reminder about our quarterly supplier review tomorrow (Friday, Jan 20) at 3:00 PM EST.\n\nZoom Link: https://zoom.us/j/123456789\nMeeting ID: 123 456 789\nPassword: supplies2024\n\nWe'll review inventory levels, pricing updates, and Q1 forecasts.\n\nSee you then!\nRachel",
+      "expected_meeting": {
+        "is_meeting": true,
+        "has_date_time": true,
+        "platform": "Zoom",
+        "date_contains": "Friday",
+        "time_contains": "3:00 PM"
+      }
+    },
+    {
+      "id": "test-4.4",
+      "category": "meeting_detection",
+      "test_name": "No Meeting Request",
+      "subject": "Thanks for the Quick Delivery",
+      "from": "contractor@example.com",
+      "sender": "Steve Rogers",
+      "body": "Joe,\n\nThank you for expediting that lumber delivery yesterday. The crew was able to stay on schedule thanks to your quick response. We really appreciate your flexibility and customer service.\n\nBest regards,\nSteve",
+      "expected_meeting": {
+        "is_meeting": false
+      }
+    },
+    {
+      "id": "test-5.1",
+      "category": "edge_cases",
+      "test_name": "Empty Email Body",
+      "subject": "(no subject)",
+      "from": "unknown@example.com",
+      "sender": "Unknown Sender",
+      "body": "",
+      "expected_behavior": "graceful_handling",
+      "should_not_crash": true
+    },
+    {
+      "id": "test-5.3",
+      "category": "edge_cases",
+      "test_name": "Special Characters",
+      "subject": "Re: Quote for $25,000 order & \"rush\" delivery",
+      "from": "contractor@example.com",
+      "sender": "John O'Brien",
+      "body": "Hi Joe,\n\nI'm interested in placing an order but have questions about:\n- The $25,000 bulk pricing (is this negotiable?)\n- What \"rush delivery\" actually means?\n- Whether you work with commercial contractors & residential builders?\n\nLet's discuss @ your earliest convenience.\n\nThanks,\nJohn",
+      "expected_behavior": "preserves_special_chars",
+      "special_chars": ["$", "&", "@", "\"", "'"]
+    },
+    {
+      "id": "test-5.4",
+      "category": "edge_cases",
+      "test_name": "Non-English Email",
+      "subject": "Commande de matériaux",
+      "from": "contractor@example.com",
+      "sender": "Pierre Dubois",
+      "body": "Bonjour Joe,\n\nJe voudrais commander des matériaux de construction pour la semaine prochaine.\n\nMerci,\nPierre",
+      "expected_behavior": "recognizes_non_english",
+      "language": "french",
+      "should_not_crash": true
+    }
+  ]
+}

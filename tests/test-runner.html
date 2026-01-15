@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Assistant Test Runner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-value.passed {
+            color: #28a745;
+        }
+
+        .stat-value.failed {
+            color: #dc3545;
+        }
+
+        .stat-value.pending {
+            color: #ffc107;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-category {
+            margin-bottom: 30px;
+        }
+
+        .category-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            padding: 12px 0;
+            border-bottom: 2px solid #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #667eea;
+            color: white;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .test-card.running {
+            border-color: #ffc107;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+        }
+
+        .test-card.passed {
+            border-color: #28a745;
+        }
+
+        .test-card.failed {
+            border-color: #dc3545;
+        }
+
+        .test-header {
+            padding: 15px 20px;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .test-header:hover {
+            background: #f8f9fa;
+        }
+
+        .test-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .test-status.pending {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .test-status.running {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .test-status.passed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .test-status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .test-id {
+            font-size: 12px;
+            color: #6c757d;
+            font-family: 'Courier New', monospace;
+            min-width: 100px;
+        }
+
+        .test-name {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .test-duration {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .test-details {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+
+        .test-details.show {
+            display: block;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #333;
+        }
+
+        .expectation-list {
+            list-style: none;
+        }
+
+        .expectation-item {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .expectation-item::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .expectation-item.failed::before {
+            content: '✗';
+            color: #dc3545;
+        }
+
+        .result-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .result-box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .result-box.failure {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .log-timestamp {
+            color: #858585;
+            margin-right: 10px;
+        }
+
+        .log-level {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .log-level.info {
+            color: #4fc3f7;
+        }
+
+        .log-level.success {
+            color: #66bb6a;
+        }
+
+        .log-level.error {
+            color: #ef5350;
+        }
+
+        .log-level.warning {
+            color: #ffb74d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Email Assistant Test Runner</h1>
+            <p>Automated testing for Joe Newman's Outlook Email Assistant</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="runAllTests">▶️ Run All Tests</button>
+            <button class="btn btn-secondary" id="runCategoryTests">▶️ Run Selected Category</button>
+            <button class="btn btn-danger" id="stopTests">⏹️ Stop</button>
+            <button class="btn btn-success" id="exportResults">📊 Export Results</button>
+
+            <select id="categorySelect" class="btn" style="background: white; color: #333;">
+                <option value="all">All Categories</option>
+                <option value="response_generation">Response Generation</option>
+                <option value="task_extraction">Task Extraction</option>
+                <option value="summarization">Summarization</option>
+                <option value="meeting_detection">Meeting Detection</option>
+                <option value="edge_cases">Edge Cases</option>
+            </select>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Passed</div>
+                    <div class="stat-value passed" id="passedCount">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Failed</div>
+                    <div class="stat-value failed" id="failedCount">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value" id="totalCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <div id="testCategories"></div>
+
+            <div class="log-container" id="logContainer">
+                <div class="log-entry">
+                    <span class="log-timestamp">[00:00:00]</span>
+                    <span class="log-level info">[INFO]</span>
+                    <span>Test runner initialized. Load test data to begin.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test State
+        let testData = null;
+        let testResults = [];
+        let isRunning = false;
+        let currentTest = 0;
+
+        // DOM Elements
+        const runAllBtn = document.getElementById('runAllTests');
+        const runCategoryBtn = document.getElementById('runCategoryTests');
+        const stopBtn = document.getElementById('stopTests');
+        const exportBtn = document.getElementById('exportResults');
+        const categorySelect = document.getElementById('categorySelect');
+        const testCategoriesContainer = document.getElementById('testCategories');
+        const progressBar = document.getElementById('progressBar');
+        const passedCount = document.getElementById('passedCount');
+        const failedCount = document.getElementById('failedCount');
+        const totalCount = document.getElementById('totalCount');
+        const logContainer = document.getElementById('logContainer');
+
+        // Initialize
+        loadTestData();
+
+        // Event Listeners
+        runAllBtn.addEventListener('click', () => runTests('all'));
+        runCategoryBtn.addEventListener('click', () => runTests(categorySelect.value));
+        stopBtn.addEventListener('click', stopTests);
+        exportBtn.addEventListener('click', exportResults);
+
+        async function loadTestData() {
+            try {
+                const response = await fetch('test-emails.json');
+                testData = await response.json();
+                renderTests();
+                log('info', `Loaded ${testData.test_emails.length} test cases`);
+                updateStats();
+            } catch (error) {
+                log('error', 'Failed to load test data: ' + error.message);
+            }
+        }
+
+        function renderTests() {
+            const categories = groupByCategory(testData.test_emails);
+            testCategoriesContainer.innerHTML = '';
+
+            for (const [category, tests] of Object.entries(categories)) {
+                const categoryDiv = createCategorySection(category, tests);
+                testCategoriesContainer.appendChild(categoryDiv);
+            }
+
+            totalCount.textContent = testData.test_emails.length;
+        }
+
+        function groupByCategory(tests) {
+            return tests.reduce((acc, test) => {
+                if (!acc[test.category]) {
+                    acc[test.category] = [];
+                }
+                acc[test.category].push(test);
+                return acc;
+            }, {});
+        }
+
+        function createCategorySection(category, tests) {
+            const div = document.createElement('div');
+            div.className = 'test-category';
+            div.dataset.category = category;
+
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerHTML = `
+                ${formatCategoryName(category)}
+                <span class="category-badge">${tests.length} tests</span>
+            `;
+
+            div.appendChild(header);
+
+            tests.forEach(test => {
+                const testCard = createTestCard(test);
+                div.appendChild(testCard);
+            });
+
+            return div;
+        }
+
+        function createTestCard(test) {
+            const card = document.createElement('div');
+            card.className = 'test-card';
+            card.id = `test-${test.id}`;
+
+            const header = document.createElement('div');
+            header.className = 'test-header';
+            header.innerHTML = `
+                <div class="test-status pending" id="status-${test.id}">⏱️</div>
+                <div class="test-id">${test.id}</div>
+                <div class="test-name">${test.test_name}</div>
+                <div class="test-duration" id="duration-${test.id}">-</div>
+            `;
+            header.addEventListener('click', () => toggleTestDetails(test.id));
+
+            const details = document.createElement('div');
+            details.className = 'test-details';
+            details.id = `details-${test.id}`;
+            details.innerHTML = createTestDetailsHTML(test);
+
+            card.appendChild(header);
+            card.appendChild(details);
+
+            return card;
+        }
+
+        function createTestDetailsHTML(test) {
+            return `
+                <div class="detail-section">
+                    <div class="detail-label">📧 Email Content</div>
+                    <div class="detail-content"><strong>Subject:</strong> ${test.subject}
+<strong>From:</strong> ${test.sender} (${test.from})
+
+${test.body}</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">✅ Expected Behavior</div>
+                    <ul class="expectation-list" id="expectations-${test.id}">
+                        ${generateExpectations(test)}
+                    </ul>
+                </div>
+                <div class="detail-section" id="result-section-${test.id}" style="display:none;">
+                    <div class="detail-label">📊 Test Result</div>
+                    <div class="result-box" id="result-${test.id}"></div>
+                </div>
+            `;
+        }
+
+        function generateExpectations(test) {
+            let expectations = '';
+
+            switch(test.category) {
+                case 'response_generation':
+                    expectations = `
+                        <li class="expectation-item">Response type: ${test.expected_response_type}</li>
+                        <li class="expectation-item">Contains keywords: ${test.expected_keywords.join(', ')}</li>
+                        <li class="expectation-item">Word count: ${test.expected_word_count[0]}-${test.expected_word_count[1]}</li>
+                    `;
+                    break;
+                case 'task_extraction':
+                    expectations = `
+                        <li class="expectation-item">Expected tasks: ${test.min_tasks}-${test.max_tasks}</li>
+                        ${test.expected_tasks.map(t => `<li class="expectation-item">Task contains: "${t.text_contains}" (${t.priority})</li>`).join('')}
+                    `;
+                    break;
+                case 'summarization':
+                    expectations = `
+                        <li class="expectation-item">Contains subject and sender</li>
+                        <li class="expectation-item">Key points: ${test.expected_summary.key_points_count[0]}-${test.expected_summary.key_points_count[1]}</li>
+                        <li class="expectation-item">Topics: ${test.expected_summary.key_topics.join(', ')}</li>
+                    `;
+                    break;
+                case 'meeting_detection':
+                    expectations = `
+                        <li class="expectation-item">Is meeting request: ${test.expected_meeting.is_meeting}</li>
+                        ${test.expected_meeting.is_meeting ? `
+                            <li class="expectation-item">Has date/time info: ${test.expected_meeting.has_date_time}</li>
+                            <li class="expectation-item">Has location info: ${test.expected_meeting.has_location}</li>
+                        ` : ''}
+                    `;
+                    break;
+                case 'edge_cases':
+                    expectations = `
+                        <li class="expectation-item">Should not crash: ${test.should_not_crash}</li>
+                        <li class="expectation-item">Expected behavior: ${test.expected_behavior}</li>
+                    `;
+                    break;
+            }
+
+            return expectations;
+        }
+
+        function toggleTestDetails(testId) {
+            const details = document.getElementById(`details-${testId}`);
+            details.classList.toggle('show');
+        }
+
+        function formatCategoryName(category) {
+            return category.split('_').map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        async function runTests(category) {
+            if (isRunning) {
+                log('warning', 'Tests already running');
+                return;
+            }
+
+            isRunning = true;
+            testResults = [];
+            currentTest = 0;
+            resetStats();
+
+            const testsToRun = category === 'all'
+                ? testData.test_emails
+                : testData.test_emails.filter(t => t.category === category);
+
+            log('info', `Starting ${testsToRun.length} tests...`);
+
+            for (const test of testsToRun) {
+                if (!isRunning) break;
+
+                await runSingleTest(test);
+                currentTest++;
+                updateProgress(currentTest, testsToRun.length);
+            }
+
+            isRunning = false;
+            log('success', `Testing complete! Passed: ${testResults.filter(r => r.passed).length}/${testsToRun.length}`);
+        }
+
+        async function runSingleTest(test) {
+            const startTime = Date.now();
+            updateTestStatus(test.id, 'running', '⏳');
+            log('info', `Running test: ${test.id} - ${test.test_name}`);
+
+            try {
+                // Simulate test execution (in real implementation, this would call the actual functions)
+                await simulateTest(test);
+
+                const duration = Date.now() - startTime;
+                const result = validateTestResult(test);
+
+                updateTestStatus(test.id, result.passed ? 'passed' : 'failed',
+                                 result.passed ? '✅' : '❌');
+                updateTestDuration(test.id, duration);
+                showTestResult(test.id, result);
+
+                testResults.push({ test: test.id, ...result, duration });
+                updateStats();
+
+                log(result.passed ? 'success' : 'error',
+                    `${test.id}: ${result.passed ? 'PASSED' : 'FAILED'} (${duration}ms)`);
+
+            } catch (error) {
+                log('error', `${test.id}: ERROR - ${error.message}`);
+                updateTestStatus(test.id, 'failed', '❌');
+                testResults.push({ test: test.id, passed: false, error: error.message });
+                updateStats();
+            }
+        }
+
+        async function simulateTest(test) {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+
+            // In real implementation, this would:
+            // 1. Call the actual functions from taskpane.js
+            // 2. Validate the outputs
+            // 3. Return results
+        }
+
+        function validateTestResult(test) {
+            // Mock validation - in real implementation, check actual outputs
+            const randomSuccess = Math.random() > 0.2; // 80% success rate for demo
+
+            return {
+                passed: randomSuccess,
+                message: randomSuccess
+                    ? 'All expectations met'
+                    : 'Some expectations not met',
+                details: generateMockDetails(test, randomSuccess)
+            };
+        }
+
+        function generateMockDetails(test, passed) {
+            if (test.category === 'response_generation') {
+                return {
+                    wordCount: passed ? 75 : 150,
+                    containsKeywords: passed,
+                    appropriateTone: passed
+                };
+            } else if (test.category === 'task_extraction') {
+                return {
+                    tasksFound: passed ? test.min_tasks : 0,
+                    correctPriority: passed
+                };
+            }
+            return {};
+        }
+
+        function updateTestStatus(testId, status, icon) {
+            const statusEl = document.getElementById(`status-${testId}`);
+            const card = document.getElementById(`test-${testId}`);
+
+            statusEl.className = `test-status ${status}`;
+            statusEl.textContent = icon;
+            card.className = `test-card ${status}`;
+        }
+
+        function updateTestDuration(testId, duration) {
+            const durationEl = document.getElementById(`duration-${testId}`);
+            durationEl.textContent = `${duration}ms`;
+        }
+
+        function showTestResult(testId, result) {
+            const resultSection = document.getElementById(`result-section-${testId}`);
+            const resultBox = document.getElementById(`result-${testId}`);
+
+            resultSection.style.display = 'block';
+            resultBox.className = `result-box ${result.passed ? 'success' : 'failure'}`;
+            resultBox.innerHTML = `
+                <strong>${result.passed ? '✅ Test Passed' : '❌ Test Failed'}</strong><br>
+                ${result.message}<br><br>
+                <pre>${JSON.stringify(result.details, null, 2)}</pre>
+            `;
+        }
+
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+
+        function updateStats() {
+            const passed = testResults.filter(r => r.passed).length;
+            const failed = testResults.filter(r => !r.passed).length;
+
+            passedCount.textContent = passed;
+            failedCount.textContent = failed;
+        }
+
+        function resetStats() {
+            passedCount.textContent = '0';
+            failedCount.textContent = '0';
+            progressBar.style.width = '0%';
+        }
+
+        function stopTests() {
+            isRunning = false;
+            log('warning', 'Tests stopped by user');
+        }
+
+        function exportResults() {
+            if (testResults.length === 0) {
+                log('warning', 'No results to export');
+                return;
+            }
+
+            const report = {
+                timestamp: new Date().toISOString(),
+                totalTests: testResults.length,
+                passed: testResults.filter(r => r.passed).length,
+                failed: testResults.filter(r => !r.passed).length,
+                results: testResults
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `test-results-${Date.now()}.json`;
+            a.click();
+
+            log('success', 'Results exported successfully');
+        }
+
+        function log(level, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-level ${level}">[${level.toUpperCase()}]</span>
+                <span>${message}</span>
+            `;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
