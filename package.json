@@ -1,0 +1,28 @@
+{
+  "name": "joe-newman-outlook-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered email assistant for Joe Newman - drafts responses, extracts tasks, summarizes emails, and schedules meetings",
+  "main": "taskpane.html",
+  "scripts": {
+    "start": "office-addin-debugging start manifest.xml",
+    "stop": "office-addin-debugging stop manifest.xml",
+    "dev-server": "webpack serve --mode development",
+    "validate": "office-addin-manifest validate manifest.xml",
+    "serve": "http-server -p 3000 --ssl --cert localhost.crt --key localhost.key"
+  },
+  "keywords": [
+    "outlook",
+    "add-in",
+    "email",
+    "assistant",
+    "ai",
+    "productivity"
+  ],
+  "author": "Joe Newman",
+  "license": "MIT",
+  "devDependencies": {
+    "office-addin-debugging": "^5.0.0",
+    "office-addin-dev-certs": "^1.11.3",
+    "http-server": "^14.1.1"
+  }
+}

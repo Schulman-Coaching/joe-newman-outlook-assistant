@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Joe's Email Assistant</title>
+    
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <link rel="stylesheet" href="taskpane.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📧 Email Assistant</h1>
+            <p class="subtitle">For Joe Newman</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="responses">✍️ Responses</button>
+            <button class="tab-button" data-tab="tasks">✅ Tasks</button>
+            <button class="tab-button" data-tab="summary">📝 Summary</button>
+            <button class="tab-button" data-tab="meetings">📅 Meetings</button>
+        </div>
+        
+        <!-- Responses Tab -->
+        <div id="responses-tab" class="tab-content active">
+            <div class="section">
+                <h2>Draft Response</h2>
+                <div class="button-group">
+                    <button id="generate-quick-reply" class="btn btn-primary">Quick Reply</button>
+                    <button id="generate-detailed-reply" class="btn btn-secondary">Detailed Reply</button>
+                    <button id="generate-meeting-response" class="btn btn-secondary">Suggest Meeting</button>
+                </div>
+                
+                <div id="response-output" class="output-box" style="display:none;">
+                    <label>Generated Response:</label>
+                    <textarea id="response-text" rows="10"></textarea>
+                    <div class="button-group">
+                        <select id="tone-selector">
+                            <option value="professional">Professional</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="formal">Formal</option>
+                            <option value="casual">Casual</option>
+                        </select>
+                        <button id="regenerate-response" class="btn btn-secondary">Regenerate</button>
+                        <button id="insert-response" class="btn btn-success">Insert to Email</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks Tab -->
+        <div id="tasks-tab" class="tab-content">
+            <div class="section">
+                <h2>Extract Tasks</h2>
+                <button id="extract-tasks" class="btn btn-primary">Analyze Email for Tasks</button>
+                
+                <div id="tasks-output" style="display:none;">
+                    <h3>Detected Action Items:</h3>
+                    <ul id="tasks-list" class="tasks-list"></ul>
+                    <button id="export-tasks" class="btn btn-success">Export to Tasks/Todo</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Tab -->
+        <div id="summary-tab" class="tab-content">
+            <div class="section">
+                <h2>Email Summary</h2>
+                <button id="summarize-email" class="btn btn-primary">Summarize This Email</button>
+                <button id="summarize-thread" class="btn btn-secondary">Summarize Thread</button>
+                
+                <div id="summary-output" class="output-box" style="display:none;">
+                    <h3>Summary:</h3>
+                    <div id="summary-text" class="summary-content"></div>
+                    <button id="copy-summary" class="btn btn-secondary">Copy Summary</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Meetings Tab -->
+        <div id="meetings-tab" class="tab-content">
+            <div class="section">
+                <h2>Meeting Scheduling</h2>
+                <button id="detect-meeting-request" class="btn btn-primary">Detect Meeting Request</button>
+                
+                <div id="meeting-output" style="display:none;">
+                    <h3>Meeting Details:</h3>
+                    <div id="meeting-details" class="meeting-details"></div>
+                    <button id="create-calendar-event" class="btn btn-success">Create Calendar Event</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+    
+    <script src="taskpane.js"></script>
+</body>
+</html>
