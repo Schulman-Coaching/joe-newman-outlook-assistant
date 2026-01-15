@@ -1,0 +1,50 @@
+Hi Joe! 👋
+
+Your Outlook Email Assistant is ready! Here's how to install it:
+
+📥 INSTALLATION (5 minutes)
+
+1️⃣ Download this file:
+https://joe-newman-outlook-assistant.vercel.app/manifest.xml
+(Right-click → Save As → Save to Downloads)
+
+2️⃣ In Outlook:
+- Open any email
+- Click "Get Add-ins" button (top ribbon)
+- Click "My add-ins" (left sidebar)
+- Scroll down to "Custom add-ins"
+- Click "+ Add from file"
+- Choose the manifest.xml you downloaded
+- Click "Install"
+
+3️⃣ Start using it:
+- Open any email
+- Look for "Joe's Email Assistant" button
+- Click it to generate responses, extract tasks, summarize emails!
+
+✨ FEATURES
+
+✍️ Generate email responses (quick/detailed/meeting)
+✅ Extract action items from emails
+📝 Summarize long email threads
+📅 Detect meeting requests
+
+🤖 AI-POWERED RESPONSES (Included!)
+
+Your assistant has AI built-in! Elie is providing the AI access, so you get:
+
+✨ Personalized responses that understand context
+✨ Replies written in your voice as an executive coach
+✨ Smart suggestions based on email content
+✨ FREE for you - Elie covers the cost (~$2/month)
+
+Just install and start using it!
+
+❓ QUESTIONS?
+
+Contact Elie: elie@cohortlearninglabs.org
+
+---
+
+Live URL: https://joe-newman-outlook-assistant.vercel.app
+GitHub: https://github.com/Schulman-Coaching/joe-newman-outlook-assistant
