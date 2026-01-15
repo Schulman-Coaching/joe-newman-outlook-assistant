@@ -30,6 +30,11 @@
             margin-bottom: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
+            display: none; /* Hidden by default, shown by JavaScript */
+        }
+
+        .title-slide.active {
+            display: block;
         }
 
         .title-slide h1 {
@@ -56,6 +61,11 @@
             padding: 40px;
             margin-bottom: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none; /* Hidden by default, shown by JavaScript */
+        }
+
+        .slide.active {
+            display: block;
         }
 
         .slide-title {
@@ -1206,13 +1216,13 @@
                 currentSlide = n;
             }
 
-            // Hide all slides
+            // Remove active class from all slides
             slides.forEach(slide => {
-                slide.style.display = 'none';
+                slide.classList.remove('active');
             });
 
-            // Show current slide
-            slides[currentSlide].style.display = 'block';
+            // Add active class to current slide
+            slides[currentSlide].classList.add('active');
 
             // Update navigation
             document.getElementById('prevBtn').disabled = currentSlide === 0;
