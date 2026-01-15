@@ -106,11 +106,24 @@ async function generateResponse(responseType) {
 
 async function analyzeAndGenerateResponse(emailContent, subject, type) {
     const tone = document.getElementById('tone-selector').value;
+
+    // Try AI-powered generation first
+    try {
+        const aiResponse = await generateWithAI(emailContent, subject, currentSender, type, tone);
+        if (aiResponse) {
+            return aiResponse;
+        }
+    } catch (error) {
+        console.log('AI generation failed, falling back to templates:', error);
+        // Fall through to template-based generation
+    }
+
+    // Fallback: Template-based generation
     let response = '';
-    
+
     if (type === 'quick') {
         response = 'Hi ' + currentSender + ',\n\nThank you for your email regarding "' + subject + '".\n\n';
-        
+
         if (emailContent.toLowerCase().includes('question')) {
             response += 'I have received your questions and will review them carefully. I will get back to you with detailed answers shortly.\n\n';
         } else if (emailContent.toLowerCase().includes('meeting')) {
@@ -118,7 +131,7 @@ async function analyzeAndGenerateResponse(emailContent, subject, type) {
         } else {
             response += 'I have reviewed your message and will respond with more details soon.\n\n';
         }
-        
+
         response += 'Best regards,\nJoe Newman';
     } else if (type === 'detailed') {
         response = 'Dear ' + currentSender + ',\n\nThank you for reaching out regarding "' + subject + '".\n\n';
@@ -137,8 +150,34 @@ async function analyzeAndGenerateResponse(emailContent, subject, type) {
         response += 'Please let me know which time works best for you, or suggest an alternative.\n\n';
         response += 'Best regards,\nJoe Newman';
     }
-    
+
     return applyTone(response, tone);
+}
+
+async function generateWithAI(emailContent, subject, sender, type, tone) {
+    // Call the Vercel serverless function
+    const apiUrl = 'https://joe-newman-outlook-assistant.vercel.app/api/generate-response';
+
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            emailContent: emailContent,
+            subject: subject,
+            sender: sender,
+            type: type,
+            tone: tone
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error('AI API returned status: ' + response.status);
+    }
+
+    const data = await response.json();
+    return data.response;
 }
 
 function applyTone(text, tone) {

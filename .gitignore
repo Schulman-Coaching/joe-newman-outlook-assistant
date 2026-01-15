@@ -43,3 +43,5 @@ temp/
 
 # Office Add-in specific
 .office-cache/
+.vercel
+.env
