@@ -1183,10 +1183,10 @@
         </div>
 
         <!-- Navigation -->
-        <div class="slide" style="padding: 20px;">
+        <div style="padding: 20px;">
             <div class="nav-buttons">
                 <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
-                <span id="slideIndicator" style="color: white; font-size: 18px;">Slide 1 of 8</span>
+                <span id="slideIndicator" style="color: white; font-size: 18px;">Slide 1 of 9</span>
                 <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
             </div>
         </div>
@@ -1194,7 +1194,6 @@
 
     <script>
         let currentSlide = 0;
-        const totalSlides = 8;
 
         function showSlide(n) {
             const slides = document.querySelectorAll('.slide, .title-slide');
@@ -1218,7 +1217,7 @@
             // Update navigation
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
-            document.getElementById('slideIndicator').textContent = `Slide ${currentSlide + 1} of ${totalSlides + 1}`;
+            document.getElementById('slideIndicator').textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
 
             // Scroll to top
             window.scrollTo(0, 0);
