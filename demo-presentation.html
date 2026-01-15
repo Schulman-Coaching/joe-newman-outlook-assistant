@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Assistant Demo - Joe Newman Building Supply</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .title-slide {
+            background: white;
+            border-radius: 20px;
+            padding: 80px 60px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .title-slide .subtitle {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .title-slide .tagline {
+            font-size: 18px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .slide-title {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .slide-number {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        /* Outlook Interface Mockup */
+        .outlook-window {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin: 20px 0;
+            background: white;
+        }
+
+        .outlook-titlebar {
+            background: #0078d4;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .outlook-titlebar .title {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .outlook-ribbon {
+            background: #f3f2f1;
+            padding: 8px 20px;
+            border-bottom: 1px solid #d2d0ce;
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .ribbon-tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .ribbon-tab.active {
+            border-bottom-color: #0078d4;
+            color: #0078d4;
+        }
+
+        .outlook-content {
+            display: flex;
+            height: 600px;
+        }
+
+        .email-list {
+            width: 350px;
+            border-right: 1px solid #e1dfdd;
+            overflow-y: auto;
+        }
+
+        .email-item {
+            padding: 16px;
+            border-bottom: 1px solid #e1dfdd;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .email-item:hover {
+            background: #f3f2f1;
+        }
+
+        .email-item.selected {
+            background: #e5f3ff;
+            border-left: 3px solid #0078d4;
+        }
+
+        .email-sender {
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 4px;
+        }
+
+        .email-subject {
+            color: #323130;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .email-preview {
+            color: #605e5c;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-time {
+            font-size: 12px;
+            color: #8a8886;
+            margin-top: 4px;
+        }
+
+        .email-reading-pane {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .email-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .email-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1dfdd;
+        }
+
+        .email-header h2 {
+            color: #323130;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .email-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #605e5c;
+        }
+
+        .email-text {
+            line-height: 1.8;
+            color: #323130;
+            font-size: 14px;
+        }
+
+        .email-text p {
+            margin-bottom: 15px;
+        }
+
+        /* Task Pane - Email Assistant */
+        .task-pane {
+            width: 380px;
+            border-left: 1px solid #e1dfdd;
+            background: #faf9f8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-pane-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .task-pane-header h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .task-pane-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e1dfdd;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #f3f2f1;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .task-pane-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f2f1;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d2d0ce;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .output-box {
+            background: white;
+            border: 1px solid #d2d0ce;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .output-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .response-text {
+            color: #323130;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .task-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #f3f2f1;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            align-items: flex-start;
+        }
+
+        .task-checkbox {
+            margin-top: 2px;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 13px;
+            color: #323130;
+        }
+
+        .task-priority {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #fde7e9;
+            color: #c50f1f;
+        }
+
+        .priority-medium {
+            background: #fff4ce;
+            color: #8a7100;
+        }
+
+        .priority-low {
+            background: #dff6dd;
+            color: #107c10;
+        }
+
+        .summary-section {
+            margin-bottom: 15px;
+        }
+
+        .summary-section strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .summary-section p, .summary-section ul {
+            font-size: 13px;
+            color: #323130;
+            line-height: 1.6;
+        }
+
+        .summary-section ul {
+            padding-left: 20px;
+        }
+
+        .summary-section li {
+            margin-bottom: 5px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .benefits-list {
+            background: #f5f7fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .benefits-list h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .benefits-list ul {
+            list-style: none;
+        }
+
+        .benefits-list li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .benefits-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e1dfdd;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .screenshot-caption {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .slide {
+                page-break-after: always;
+                box-shadow: none;
+            }
+            .nav-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Title Slide -->
+        <div class="title-slide" id="slide-0">
+            <h1>📧 Email Assistant Demo</h1>
+            <div class="subtitle">AI-Powered Email Management for Joe Newman Building Supply</div>
+            <div class="tagline">Automate responses • Extract tasks • Summarize emails • Detect meetings</div>
+        </div>
+
+        <!-- Slide 1: Overview -->
+        <div class="slide" id="slide-1">
+            <div class="slide-number">Slide 1 of 8</div>
+            <h2 class="slide-title">What is the Email Assistant?</h2>
+
+            <p style="font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 30px;">
+                A powerful Outlook add-in that integrates directly into your email workflow, helping you manage communications with contractors, suppliers, and customers more efficiently.
+            </p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>Smart Responses</h3>
+                    <p>Generate professional email replies in seconds with customizable tones</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Task Extraction</h3>
+                    <p>Automatically identify action items and deadlines from emails</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Email Summaries</h3>
+                    <p>Get quick summaries of long emails and conversation threads</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Meeting Detection</h3>
+                    <p>Identify meeting requests and create calendar events instantly</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Main Interface Screenshot -->
+        <div class="slide" id="slide-2">
+            <div class="slide-number">Slide 2 of 8</div>
+            <h2 class="slide-title">How It Looks in Outlook</h2>
+
+            <div class="outlook-window">
+                <div class="outlook-titlebar">
+                    <div class="title">📧 Outlook - joe.newman@buildingsupply.com</div>
+                    <div>🗕 🗖 ✕</div>
+                </div>
+
+                <div class="outlook-ribbon">
+                    <div class="ribbon-tab active">Home</div>
+                    <div class="ribbon-tab">Send / Receive</div>
+                    <div class="ribbon-tab">Folder</div>
+                    <div class="ribbon-tab">View</div>
+                </div>
+
+                <div class="outlook-content">
+                    <div class="email-list">
+                        <div class="email-item">
+                            <div class="email-sender">Regional Supplier Co.</div>
+                            <div class="email-subject">Q4 Partnership Proposal</div>
+                            <div class="email-preview">Dear Joe, I hope this email finds you well...</div>
+                            <div class="email-time">9:30 AM</div>
+                        </div>
+                        <div class="email-item selected">
+                            <div class="email-sender">Michael Chen - Chen Construction</div>
+                            <div class="email-subject">Quote Request - Commercial Project</div>
+                            <div class="email-preview">Hi Joe, I'm working on a commercial renovation...</div>
+                            <div class="email-time">8:15 AM</div>
+                        </div>
+                        <div class="email-item">
+                            <div class="email-sender">Sarah Johnson</div>
+                            <div class="email-subject">Question about lumber delivery</div>
+                            <div class="email-preview">Hi Joe, Can we reschedule our lumber delivery...</div>
+                            <div class="email-time">Yesterday</div>
+                        </div>
+                        <div class="email-item">
+                            <div class="email-sender">Lisa Martinez</div>
+                            <div class="email-subject">Action Items from Supplier Meeting</div>
+                            <div class="email-preview">Hi Joe, Following up on our meeting...</div>
+                            <div class="email-time">Yesterday</div>
+                        </div>
+                    </div>
+
+                    <div class="email-reading-pane">
+                        <div class="email-body">
+                            <div class="email-header">
+                                <h2>Quote Request - Commercial Project</h2>
+                                <div class="email-meta">
+                                    <div><strong>From:</strong> Michael Chen (generalcontractor@company.com)</div>
+                                    <div><strong>To:</strong> Joe Newman</div>
+                                    <div><strong>Time:</strong> Today 8:15 AM</div>
+                                </div>
+                            </div>
+
+                            <div class="email-text">
+                                <p>Hi Joe,</p>
+                                <p>I'm working on a commercial renovation project and need quotes for the following:</p>
+                                <ol>
+                                    <li>What's your current pricing on 2x4 studs (approximately 500 units needed)?</li>
+                                    <li>Do you stock commercial-grade drywall and can you deliver to job sites?</li>
+                                    <li>What are your bulk discount rates for orders over $10,000?</li>
+                                    <li>Can you provide references from other commercial contractors you've worked with?</li>
+                                </ol>
+                                <p>Project starts in 3 weeks, so timing is important.</p>
+                                <p>Best regards,<br>Michael Chen<br>Chen Construction LLC</p>
+                            </div>
+                        </div>
+
+                        <div class="task-pane">
+                            <div class="task-pane-header">
+                                <h3>📧 Email Assistant</h3>
+                                <p>AI-Powered Email Tools</p>
+                            </div>
+
+                            <div class="tabs">
+                                <div class="tab active">Responses</div>
+                                <div class="tab">Tasks</div>
+                                <div class="tab">Summary</div>
+                                <div class="tab">Meetings</div>
+                            </div>
+
+                            <div class="task-pane-content">
+                                <div class="control-group">
+                                    <label class="control-label">Response Type</label>
+                                    <button class="btn btn-primary">✍️ Quick Reply</button>
+                                    <button class="btn btn-primary">📝 Detailed Reply</button>
+                                    <button class="btn btn-primary">📅 Suggest Meeting</button>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Tone</label>
+                                    <select>
+                                        <option>Professional</option>
+                                        <option>Friendly</option>
+                                        <option>Formal</option>
+                                        <option>Casual</option>
+                                    </select>
+                                </div>
+
+                                <div style="text-align: center; padding: 20px; color: #888; font-size: 13px;">
+                                    Click a button above to generate a response
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-caption">
+                The Email Assistant appears as a task pane on the right side of Outlook
+            </div>
+        </div>
+
+        <!-- Slide 3: Response Generation Demo -->
+        <div class="slide" id="slide-3">
+            <div class="slide-number">Slide 3 of 8</div>
+            <h2 class="slide-title">Feature 1: Smart Response Generation</h2>
+
+            <div class="outlook-window">
+                <div class="outlook-titlebar">
+                    <div class="title">📧 Outlook - Generating Response...</div>
+                    <div>🗕 🗖 ✕</div>
+                </div>
+
+                <div class="outlook-ribbon">
+                    <div class="ribbon-tab active">Home</div>
+                    <div class="ribbon-tab">Send / Receive</div>
+                    <div class="ribbon-tab">Folder</div>
+                    <div class="ribbon-tab">View</div>
+                </div>
+
+                <div class="outlook-content">
+                    <div class="email-list">
+                        <div class="email-item selected">
+                            <div class="email-sender">Michael Chen - Chen Construction</div>
+                            <div class="email-subject">Quote Request - Commercial Project</div>
+                            <div class="email-preview">Hi Joe, I'm working on a commercial renovation...</div>
+                            <div class="email-time">8:15 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="email-reading-pane">
+                        <div class="email-body">
+                            <div class="email-header">
+                                <h2>Quote Request - Commercial Project</h2>
+                                <div class="email-meta">
+                                    <div><strong>From:</strong> Michael Chen</div>
+                                </div>
+                            </div>
+
+                            <div class="email-text">
+                                <p style="color: #888; font-size: 13px;">[Email content abbreviated for space]</p>
+                            </div>
+                        </div>
+
+                        <div class="task-pane">
+                            <div class="task-pane-header">
+                                <h3>📧 Email Assistant</h3>
+                                <p>Response Generated!</p>
+                            </div>
+
+                            <div class="tabs">
+                                <div class="tab active">Responses</div>
+                                <div class="tab">Tasks</div>
+                                <div class="tab">Summary</div>
+                                <div class="tab">Meetings</div>
+                            </div>
+
+                            <div class="task-pane-content">
+                                <div class="output-box">
+                                    <h4>✅ Generated Response (Professional Tone)</h4>
+                                    <div class="response-text">
+                                        <p>Hi Michael,</p>
+                                        <p>Thank you for reaching out regarding your commercial renovation project. I'd be happy to provide you with the information you need:</p>
+                                        <p><strong>Pricing & Availability:</strong><br>
+                                        Our current pricing on 2x4 studs is competitive, and I can provide a detailed quote for 500 units. We do stock commercial-grade drywall and offer job site delivery throughout the area.</p>
+                                        <p><strong>Bulk Discounts:</strong><br>
+                                        For orders over $10,000, we offer tiered discounts ranging from 10-15% depending on the total order value and delivery requirements.</p>
+                                        <p><strong>References:</strong><br>
+                                        I can absolutely provide references from several commercial contractors we've worked with on similar projects.</p>
+                                        <p>Given your 3-week timeline, I'd like to schedule a brief call to discuss your specific requirements and provide a comprehensive quote. Would tomorrow or Wednesday work for you?</p>
+                                        <p>Best regards,<br>Joe Newman</p>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" style="margin-top: 15px;">📤 Insert into Reply</button>
+                                <button class="btn btn-secondary">🔄 Regenerate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-caption">
+                AI-generated response addressing all points professionally - ready to send or customize
+            </div>
+        </div>
+
+        <!-- Slide 4: Task Extraction Demo -->
+        <div class="slide" id="slide-4">
+            <div class="slide-number">Slide 4 of 8</div>
+            <h2 class="slide-title">Feature 2: Automatic Task Extraction</h2>
+
+            <div class="outlook-window">
+                <div class="outlook-titlebar">
+                    <div class="title">📧 Outlook - Action Items Identified</div>
+                    <div>🗕 🗖 ✕</div>
+                </div>
+
+                <div class="outlook-ribbon">
+                    <div class="ribbon-tab active">Home</div>
+                    <div class="ribbon-tab">Send / Receive</div>
+                    <div class="ribbon-tab">Folder</div>
+                    <div class="ribbon-tab">View</div>
+                </div>
+
+                <div class="outlook-content">
+                    <div class="email-list">
+                        <div class="email-item selected">
+                            <div class="email-sender">Lisa Martinez</div>
+                            <div class="email-subject">Action Items from Supplier Meeting</div>
+                            <div class="email-preview">Hi Joe, Following up on our meeting, here are...</div>
+                            <div class="email-time">Yesterday</div>
+                        </div>
+                    </div>
+
+                    <div class="email-reading-pane">
+                        <div class="email-body">
+                            <div class="email-header">
+                                <h2>Action Items from Supplier Meeting</h2>
+                                <div class="email-meta">
+                                    <div><strong>From:</strong> Lisa Martinez</div>
+                                </div>
+                            </div>
+
+                            <div class="email-text">
+                                <p>Hi Joe,</p>
+                                <p>Following up on our supplier meeting, here are the action items:</p>
+                                <ol>
+                                    <li><strong>URGENT:</strong> Please sign the new vendor agreement by end of day</li>
+                                    <li>Can you review the Q1 pricing sheet when you get a chance?</li>
+                                    <li>We need to schedule the warehouse inventory count for next month</li>
+                                    <li>No rush, but could you update the supplier contact list?</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="task-pane">
+                            <div class="task-pane-header">
+                                <h3>📧 Email Assistant</h3>
+                                <p>4 Tasks Found</p>
+                            </div>
+
+                            <div class="tabs">
+                                <div class="tab">Responses</div>
+                                <div class="tab active">Tasks</div>
+                                <div class="tab">Summary</div>
+                                <div class="tab">Meetings</div>
+                            </div>
+
+                            <div class="task-pane-content">
+                                <button class="btn btn-primary" style="margin-bottom: 15px;">🔍 Extract Action Items</button>
+
+                                <div class="output-box">
+                                    <h4>✅ Action Items Identified</h4>
+
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox">
+                                        <div class="task-text">
+                                            Sign the new vendor agreement
+                                            <div style="font-size: 11px; color: #8a8886; margin-top: 4px;">Due: End of day</div>
+                                        </div>
+                                        <span class="task-priority priority-high">HIGH</span>
+                                    </div>
+
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox">
+                                        <div class="task-text">
+                                            Review the Q1 pricing sheet
+                                        </div>
+                                        <span class="task-priority priority-medium">MEDIUM</span>
+                                    </div>
+
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox">
+                                        <div class="task-text">
+                                            Schedule the warehouse inventory count
+                                            <div style="font-size: 11px; color: #8a8886; margin-top: 4px;">Due: Next month</div>
+                                        </div>
+                                        <span class="task-priority priority-medium">MEDIUM</span>
+                                    </div>
+
+                                    <div class="task-item">
+                                        <input type="checkbox" class="task-checkbox">
+                                        <div class="task-text">
+                                            Update the supplier contact list
+                                        </div>
+                                        <span class="task-priority priority-low">LOW</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-secondary" style="margin-top: 15px;">📥 Export Tasks</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-caption">
+                Automatically extracts tasks with priorities and deadlines - export to your task manager
+            </div>
+        </div>
+
+        <!-- Slide 5: Email Summary Demo -->
+        <div class="slide" id="slide-5">
+            <div class="slide-number">Slide 5 of 8</div>
+            <h2 class="slide-title">Feature 3: Quick Email Summaries</h2>
+
+            <div class="outlook-window">
+                <div class="outlook-titlebar">
+                    <div class="title">📧 Outlook - Email Summary Generated</div>
+                    <div>🗕 🗖 ✕</div>
+                </div>
+
+                <div class="outlook-ribbon">
+                    <div class="ribbon-tab active">Home</div>
+                    <div class="ribbon-tab">Send / Receive</div>
+                    <div class="ribbon-tab">Folder</div>
+                    <div class="ribbon-tab">View</div>
+                </div>
+
+                <div class="outlook-content">
+                    <div class="email-list">
+                        <div class="email-item selected">
+                            <div class="email-sender">Regional Supplier Co.</div>
+                            <div class="email-subject">Q4 Supplier Partnership Proposal</div>
+                            <div class="email-preview">Dear Joe, I hope this email finds you well...</div>
+                            <div class="email-time">9:30 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="email-reading-pane">
+                        <div class="email-body">
+                            <div class="email-header">
+                                <h2>Q4 Supplier Partnership Proposal</h2>
+                                <div class="email-meta">
+                                    <div><strong>From:</strong> Rebecca Foster - Regional Supplier</div>
+                                </div>
+                            </div>
+
+                            <div class="email-text">
+                                <p style="color: #888; font-size: 13px;">[Long email about partnership proposal - 350 words]</p>
+                                <p style="color: #888; font-size: 13px;">Discussion of 15-20% volume discounts, extended payment terms, priority inventory allocation, and aggressive timeline for agreement...</p>
+                            </div>
+                        </div>
+
+                        <div class="task-pane">
+                            <div class="task-pane-header">
+                                <h3>📧 Email Assistant</h3>
+                                <p>Summary Ready</p>
+                            </div>
+
+                            <div class="tabs">
+                                <div class="tab">Responses</div>
+                                <div class="tab">Tasks</div>
+                                <div class="tab active">Summary</div>
+                                <div class="tab">Meetings</div>
+                            </div>
+
+                            <div class="task-pane-content">
+                                <button class="btn btn-primary" style="margin-bottom: 15px;">📝 Summarize Email</button>
+
+                                <div class="output-box">
+                                    <h4>📊 Email Summary</h4>
+
+                                    <div class="summary-section">
+                                        <strong>FROM:</strong>
+                                        <p>Rebecca Foster, Regional Sales Manager</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>LENGTH:</strong>
+                                        <p>350 words, 1 attachment</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>KEY POINTS:</strong>
+                                        <ul>
+                                            <li>Proposing preferred vendor partnership program for Q4</li>
+                                            <li>15-20% volume discounts on orders over $50,000</li>
+                                            <li>Benefits include priority inventory, Net 60 terms, free delivery</li>
+                                            <li>Tight deadline: agreement needed by end of month</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>ACTION REQUIRED:</strong>
+                                        <p>Provide feedback on proposal and references from current suppliers</p>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-secondary" style="margin-top: 15px;">📋 Copy Summary</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-caption">
+                Get the key points from long emails instantly - perfect for quick decision making
+            </div>
+        </div>
+
+        <!-- Slide 6: Meeting Detection Demo -->
+        <div class="slide" id="slide-6">
+            <div class="slide-number">Slide 6 of 8</div>
+            <h2 class="slide-title">Feature 4: Smart Meeting Detection</h2>
+
+            <div class="outlook-window">
+                <div class="outlook-titlebar">
+                    <div class="title">📧 Outlook - Meeting Request Detected</div>
+                    <div>🗕 🗖 ✕</div>
+                </div>
+
+                <div class="outlook-ribbon">
+                    <div class="ribbon-tab active">Home</div>
+                    <div class="ribbon-tab">Send / Receive</div>
+                    <div class="ribbon-tab">Folder</div>
+                    <div class="ribbon-tab">View</div>
+                </div>
+
+                <div class="outlook-content">
+                    <div class="email-list">
+                        <div class="email-item selected">
+                            <div class="email-sender">Karen Davis - Contractor</div>
+                            <div class="email-subject">Let's Schedule a Site Visit</div>
+                            <div class="email-preview">Hi Joe, I'd like to schedule a 1-hour site visit...</div>
+                            <div class="email-time">11:20 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="email-reading-pane">
+                        <div class="email-body">
+                            <div class="email-header">
+                                <h2>Let's Schedule a Site Visit</h2>
+                                <div class="email-meta">
+                                    <div><strong>From:</strong> Karen Davis</div>
+                                </div>
+                            </div>
+
+                            <div class="email-text">
+                                <p>Hi Joe,</p>
+                                <p>I'd like to schedule a 1-hour site visit to review materials for our Q2 projects. I'm available:</p>
+                                <ul>
+                                    <li>Tuesday, January 24th at 10 AM</li>
+                                    <li>Wednesday, January 25th at 2 PM</li>
+                                    <li>Thursday, January 26th at 11 AM</li>
+                                </ul>
+                                <p>We can meet at your warehouse or office - whichever is more convenient.</p>
+                            </div>
+                        </div>
+
+                        <div class="task-pane">
+                            <div class="task-pane-header">
+                                <h3>📧 Email Assistant</h3>
+                                <p>Meeting Detected!</p>
+                            </div>
+
+                            <div class="tabs">
+                                <div class="tab">Responses</div>
+                                <div class="tab">Tasks</div>
+                                <div class="tab">Summary</div>
+                                <div class="tab active">Meetings</div>
+                            </div>
+
+                            <div class="task-pane-content">
+                                <button class="btn btn-primary" style="margin-bottom: 15px;">🔍 Detect Meeting Request</button>
+
+                                <div class="output-box">
+                                    <h4>✅ Meeting Request Found</h4>
+
+                                    <div class="summary-section">
+                                        <strong>TITLE:</strong>
+                                        <p>Site Visit - Q2 Materials Review</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>PROPOSED TIMES:</strong>
+                                        <p>• Tuesday, Jan 24 at 10:00 AM<br>
+                                        • Wednesday, Jan 25 at 2:00 PM<br>
+                                        • Thursday, Jan 26 at 11:00 AM</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>DURATION:</strong>
+                                        <p>1 hour</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>ATTENDEES:</strong>
+                                        <p>Karen Davis (contractor@example.com)</p>
+                                    </div>
+
+                                    <div class="summary-section">
+                                        <strong>LOCATION:</strong>
+                                        <p>Warehouse or Office (flexible)</p>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" style="margin-top: 15px;">📅 Create Calendar Event</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-caption">
+                Automatically extracts meeting details - create calendar events with one click
+            </div>
+        </div>
+
+        <!-- Slide 7: Benefits -->
+        <div class="slide" id="slide-7">
+            <div class="slide-number">Slide 7 of 8</div>
+            <h2 class="slide-title">Why Use the Email Assistant?</h2>
+
+            <div class="benefits-list">
+                <h3>⏰ Time Savings</h3>
+                <ul>
+                    <li>Reduce email response time by 60-80%</li>
+                    <li>Generate professional replies in seconds</li>
+                    <li>No more writing the same response multiple times</li>
+                </ul>
+            </div>
+
+            <div class="benefits-list">
+                <h3>✅ Better Organization</h3>
+                <ul>
+                    <li>Never miss an action item or deadline</li>
+                    <li>Automatically track tasks from emails</li>
+                    <li>Prioritize urgent items instantly</li>
+                </ul>
+            </div>
+
+            <div class="benefits-list">
+                <h3>🎯 Improved Communication</h3>
+                <ul>
+                    <li>Consistent, professional tone across all emails</li>
+                    <li>Address all points in contractor/supplier inquiries</li>
+                    <li>Quick summaries help you focus on what matters</li>
+                </ul>
+            </div>
+
+            <div class="benefits-list">
+                <h3>📈 Business Growth</h3>
+                <ul>
+                    <li>Respond to quotes and inquiries faster</li>
+                    <li>Better customer service = more repeat business</li>
+                    <li>More time for strategic work instead of email admin</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 8: Next Steps -->
+        <div class="slide" id="slide-8">
+            <div class="slide-number">Slide 8 of 8</div>
+            <h2 class="slide-title">Ready to Get Started?</h2>
+
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 12px; color: white; margin: 30px 0;">
+                <h3 style="font-size: 32px; margin-bottom: 20px;">The Email Assistant is Ready to Use!</h3>
+                <p style="font-size: 18px; line-height: 1.8;">
+                    The add-in is already built and tested. It integrates seamlessly with Outlook and can be deployed to your account in minutes.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">1️⃣</div>
+                    <h3>Installation</h3>
+                    <p>Simple one-time setup in Outlook (takes 5 minutes)</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">2️⃣</div>
+                    <h3>Configuration</h3>
+                    <p>Optional: Connect AI service for enhanced responses</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">3️⃣</div>
+                    <h3>Training</h3>
+                    <p>Quick 15-minute walkthrough of all features</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">4️⃣</div>
+                    <h3>Start Using</h3>
+                    <p>Begin saving time on emails immediately!</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; padding: 30px; background: #f5f7fa; border-radius: 12px;">
+                <h3 style="color: #667eea; margin-bottom: 20px; font-size: 24px;">Questions?</h3>
+                <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 15px;">
+                    <strong>Contact:</strong> Available via GitHub repository<br>
+                    <strong>Documentation:</strong> Complete setup guides included<br>
+                    <strong>Support:</strong> Full testing suite and troubleshooting docs ready
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="slide" style="padding: 20px;">
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+                <span id="slideIndicator" style="color: white; font-size: 18px;">Slide 1 of 8</span>
+                <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 8;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide, .title-slide');
+
+            if (n >= slides.length) {
+                currentSlide = slides.length - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+
+            // Show current slide
+            slides[currentSlide].style.display = 'block';
+
+            // Update navigation
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+            document.getElementById('slideIndicator').textContent = `Slide ${currentSlide + 1} of ${totalSlides + 1}`;
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
